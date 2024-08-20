@@ -8,7 +8,14 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { Home, About, Contact, User, Github } from "./Components/index.js";
+import {
+  Home,
+  About,
+  Contact,
+  User,
+  Github,
+  ErrorPage,
+} from "./Components/index.js";
 import { githubInfoLoader } from "./Components/Github/Github.jsx";
 
 // const router = createBrowserRouter([
@@ -34,14 +41,19 @@ import { githubInfoLoader } from "./Components/Github/Github.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
-      <Route path="/" element={<Home />} />
-      <Route path="about" element={<About />} />
-      <Route path="contact" element={<Contact />} />
-      <Route path="user/:id" element={<User />} />
+    <Route path="/" element={<Layout />} errorElement={<ErrorPage />}>
+      <Route path="/" element={<Home />} errorElement={<ErrorPage />} />
+      <Route path="about" element={<About />} errorElement={<ErrorPage />} />
+      <Route
+        path="contact"
+        element={<Contact />}
+        errorElement={<ErrorPage />}
+      />
+      <Route path="user/:id" element={<User />} errorElement={<ErrorPage />} />
       <Route path="github" element={<Github />} loader={githubInfoLoader} />
       <Route
         path="github/:userName"
+        errorElement={<ErrorPage />}
         element={<Github />}
         loader={({ params }) => {
           return githubInfoLoader(params.userName);
