@@ -5,28 +5,38 @@ export const addTodoOptions = (newTodo) => {
       return [...todos, newTodo].sort((a, b) => b.id - a.id);
     },
     rollbackOnError: true,
-    populateCache: (added, todos) =>
-      [...todos, added].sort((a, b) => b.id - a.id),
-    revalidate: false,
   };
 };
 
-export const updateTodoOptions = (updatedTodo) => {
+export const updateTodoOptions = ({ id, title }) => {
   return {
     optimisticData: (todos) => {
-      const prevTodos = todos.filter((todo) => {
-        return todo.id !== updatedTodo.id;
-      });
-      return [...prevTodos, updatedTodo].sort((a, b) => b.id - a.id);
+      const prevTodos = todos.map((todo) =>
+        todo.id === id ? { ...todo, title } : todo
+      );
+      return prevTodos;
     },
     rollbackOnError: true,
-    populateCache: (updated, todos) => {
-      const prevTodos = todos.filter((todo) => {
-        return todo.id !== updatedTodo.id;
-      });
-      return [...prevTodos, updated].sort((a, b) => b.id - a.id);
-    },
     revalidate: false,
+    populateCache: (updated, todos) => {
+      return todos.map((todo) => (todo.id === updated.id ? updated : todo));
+    },
+  };
+};
+
+export const toggleTodoOptions = ({ id }) => {
+  return {
+    optimisticData: (todos) => {
+      const prevTodos = todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      );
+      return prevTodos;
+    },
+    rollbackOnError: true,
+    revalidate: false,
+    populateCache: (updated, todos) => {
+      return todos.map((todo) => (todo.id === updated.id ? updated : todo));
+    },
   };
 };
 
@@ -38,11 +48,10 @@ export const deleteTodoOptions = ({ id }) => {
       });
     },
     rollbackOnError: true,
-    populateCache: (emptyResponseObj, todos) => {
-      return todos.filter((todo) => {
-        return todo.id !== id;
-      });
-    },
     revalidate: false,
+    populateCache: (emptyObj, todos) => {
+      const prevTodos = todos.filter((todo) => todo.id !== id);
+      return prevTodos;
+    },
   };
 };

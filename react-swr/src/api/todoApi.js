@@ -28,7 +28,7 @@ export const apigetTodoById = async ({ id }) => {
 export const apiaddTodo = async ({ title }) => {
   try {
     await delay();
-    if (Math.random()) throw new Error("Failed to add new item!");
+
     const response = await todoApi.post(todoUrlEndPoint, { title });
     return response.data;
   } catch (error) {

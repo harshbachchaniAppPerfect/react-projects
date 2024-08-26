@@ -10,7 +10,7 @@ const addTodo = async (title) => {
     const res = await apiaddTodo(title);
     return res.data[0];
   } catch (error) {
-    console.log(`Error is ${error}`);
+    throw error;
   }
 };
 const updateTodo = async (id, title) => {
@@ -18,7 +18,7 @@ const updateTodo = async (id, title) => {
     const res = await apiupdateTodo({ id, title });
     return res.data[0];
   } catch (error) {
-    console.log(`Error is ${error}`);
+    throw error;
   }
 };
 const deleteTodo = async (id) => {
@@ -26,14 +26,16 @@ const deleteTodo = async (id) => {
     const res = await apideleteTodo({ id });
     return res.data[0];
   } catch (error) {
-    console.log(`Error is ${error}`);
+    throw error;
   }
 };
 const toggleComplete = async (id) => {
   try {
     const res = await apitoggleTodo({ id });
+    return res.data[0];
   } catch (error) {
     console.log(`Error is ${error}`);
+    throw error;
   }
 };
 

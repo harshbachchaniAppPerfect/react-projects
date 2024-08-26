@@ -13,6 +13,7 @@ import {
   addTodoOptions,
   updateTodoOptions,
   deleteTodoOptions,
+  toggleTodoOptions,
 } from "./api/todoAPISWR.js";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       toast.error("Failed to Fetched items.", {
         duration: 1000,
       });
+      throw error;
     }
   };
   const {
@@ -32,7 +34,7 @@ function App() {
     error,
     data: todos,
     mutate,
-  } = useSWR([cacheKey], getAllItems, {
+  } = useSWR(cacheKey, getAllItems, {
     onSuccess: (data) => data.sort((a, b) => b.id - a.id),
   });
 
@@ -55,10 +57,7 @@ function App() {
   };
   const mutateupdateTodo = async (id, title) => {
     try {
-      await mutate(
-        updateTodo(id, title),
-        updateTodoOptions({ id, title, completed: true })
-      );
+      await mutate(updateTodo(id, title), updateTodoOptions({ id, title }));
       toast.success("Success! Updated Item Successfully.", {
         duration: 1000,
         icon: "🎉",
@@ -86,6 +85,7 @@ function App() {
   };
   const mutatetoggleComplete = async (id) => {
     try {
+      await mutate(toggleComplete(id), toggleTodoOptions({ id }));
       toast.success("Success! Item toggled Successfully.", {
         duration: 1000,
         icon: "🎉",
@@ -98,9 +98,7 @@ function App() {
     }
   };
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  } else if (error) {
+  if (error) {
     return <p>{error.message}</p>;
   }
   return (
@@ -117,20 +115,23 @@ function App() {
       <div className="bg-[#172842] min-h-screen py-8">
         <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
           <h1 className="text-2xl font-bold text-center mb-8 mt-2">
-            Manage Your Todos
+            Manage Your Todos In My Web
           </h1>
           <div className="mb-4">
             <TodoForm />
           </div>
           <div className="flex flex-wrap gap-y-3">
-            {console.log(todos.length)}
-            {todos.map((todo) =>
-              todo ? (
-                <div key={todo.id} className="w-full">
-                  <TodoItem todo={todo} />
-                </div>
-              ) : (
-                todos.pop()
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              todos.map((todo) =>
+                todo ? (
+                  <div key={todo.id} className="w-full">
+                    <TodoItem todo={todo} />
+                  </div>
+                ) : (
+                  todos.pop()
+                )
               )
             )}
           </div>
