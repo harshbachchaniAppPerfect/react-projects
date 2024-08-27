@@ -20,6 +20,7 @@ function App() {
   const getAllItems = async () => {
     try {
       const res = await apigetAllTodos();
+      console.log(res);
       return res.data;
     } catch (error) {
       console.log(`Error is ${error}`);
@@ -115,7 +116,7 @@ function App() {
       <div className="bg-[#172842] min-h-screen py-8">
         <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
           <h1 className="text-2xl font-bold text-center mb-8 mt-2">
-            Manage Your Todos In My Web
+            Manage Your Todos
           </h1>
           <div className="mb-4">
             <TodoForm />
@@ -124,9 +125,9 @@ function App() {
             {isLoading ? (
               <p>Loading...</p>
             ) : (
-              todos.map((todo) =>
+              todos?.map((todo) =>
                 todo ? (
-                  <div key={todo.id} className="w-full">
+                  <div key={todo.id} data-testid="todos" className="w-full">
                     <TodoItem todo={todo} />
                   </div>
                 ) : (

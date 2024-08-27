@@ -39,8 +39,11 @@ function TodoItem({ todo }) {
         />
 
         <button
+          data-testid="updatebtn"
           className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0 disabled:opacity-50"
           onClick={() => {
+            mutateupdateTodo(todo.id, todoMsg);
+
             if (todo.completed) return;
 
             if (isTodoEditable) {
@@ -53,8 +56,11 @@ function TodoItem({ todo }) {
         </button>
         {/* Delete Todo Button */}
         <button
+          data-testid="deletebtn"
           className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0"
-          onClick={() => mutatedeleteTodo(todo.id)}
+          onClick={() => {
+            mutatedeleteTodo(todo.id);
+          }}
         >
           ❌
         </button>
